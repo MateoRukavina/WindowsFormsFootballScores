@@ -17,5 +17,8 @@ namespace DataAccessLayer
         public int NumberOfTeams { get; set; }
         public int NumberOfGames { get; set; }
         public string LastUpdated { get; set; }
+        public string Teams { get; set; }
+        public string Fixture { get; set; }
+        public string LeagueTable { get; set; }
     }
 }
