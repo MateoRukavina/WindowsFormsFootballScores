@@ -15,7 +15,5 @@ namespace DataAccessLayer
         public string AwayTeamName { get; set; }
         public int ResultGoalsHomeTeam { get; set; }
         public int ResultGoalsAwayTeam { get; set; }
-        public int halfTimeGoalsHomeTeam { get; set; }
-        public int halfTimeGoalsAwayTeam { get; set; }
     }
 }

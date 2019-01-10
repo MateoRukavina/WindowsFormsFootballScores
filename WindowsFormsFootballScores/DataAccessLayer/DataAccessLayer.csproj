@@ -45,11 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fixtures.cs" />
+    <Compile Include="FixturesRepository.cs" />
     <Compile Include="FootballLeague.cs" />
     <Compile Include="FootbalLeagueRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Standings.cs" />
+    <Compile Include="StandingsRepository.cs" />
     <Compile Include="Teams.cs" />
+    <Compile Include="TeamsRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
