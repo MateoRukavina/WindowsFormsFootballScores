@@ -13,23 +13,30 @@ namespace DataAccessLayer
     {
         public List<Teams> _teams = new List<Teams>();
 
-        public TeamsRepository()
+        public TeamsRepository(int leagueId)
         {
 
-            string url = "http://api.football-data.org/v1/soccerseasons";
+            string url = CreateUrl(leagueId);
             string json = CallRestMethod(url);
 
-            JArray jsonObject = JArray.Parse(json);
+            JObject jsonObject = JObject.Parse(json);
+            var teams = jsonObject["teams"].ToList();
 
-            foreach (JObject item in jsonObject)
+            for (int i = 0; i < teams.Count; i++)
             {
                 _teams.Add(new Teams
                 {
-                    Name = (string)item.GetValue("name"),
-                    Code = (string)item.GetValue("code"),
-                    ShortName = (string)item.GetValue("shortName"),
-                    SquadMarketValue = (string)item.GetValue("squadMarketValue"),
-                    TeamLogo = (string)item.GetValue("crestURI")
+                    Name = (string)teams[i]["name"],
+                    ShortName = (string)teams[i]["shortName"],
+                    Tla = (string)teams[i]["tla"],
+                    TeamLogo = (string)teams[i]["crestUrl"],
+                    Address = (string)teams[i]["address"],
+                    Phone = (string)teams[i]["phone"],
+                    Website = (string)teams[i]["website"],
+                    Email = (string)teams[i]["email"],
+                    Founded = (int)teams[i]["founded"],
+                    ClubColors = (string)teams[i]["clubColors"],
+                    Venue = (string)teams[i]["venue"]
                 });
             }
 
@@ -45,6 +52,7 @@ namespace DataAccessLayer
             HttpWebRequest webrequest = (HttpWebRequest)WebRequest.Create(url);
             webrequest.Method = "GET";
             webrequest.ContentType = "application/x-www-form-urlencoded";
+            webrequest.Headers.Add("X-Auth-Token", "898aab2093234bedb6c9523979193284");
             HttpWebResponse webresponse = (HttpWebResponse)webrequest.GetResponse();
             Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
             StreamReader responseStream = new StreamReader(webresponse.GetResponseStream(), enc);
@@ -52,6 +60,10 @@ namespace DataAccessLayer
             result = responseStream.ReadToEnd();
             webresponse.Close();
             return result;
+        }
+        public string CreateUrl(int leagueId)
+        {
+            return "http://api.football-data.org/v2/competitions/" + leagueId + "/matches";
         }
     }
 }

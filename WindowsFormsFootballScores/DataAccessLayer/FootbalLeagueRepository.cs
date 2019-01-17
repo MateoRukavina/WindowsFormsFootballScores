@@ -16,24 +16,26 @@ namespace DataAccessLayer
         public FootbalLeagueRepository()
         {
 
-            string url = "http://api.football-data.org/v1/soccerseasons";
+            string url = "http://api.football-data.org/v2/competitions";
             string json = CallRestMethod(url);
 
-            JArray jsonObject = JArray.Parse(json);
-
-            foreach (JObject item in jsonObject)
-            {
+            JObject jsonObject = JObject.Parse(json);
+            var competitions = jsonObject["competitions"].ToList();
+            
+            for (int i = 0; i < competitions.Count; i++)
+            {   
+                //Console.WriteLine(competitions[i]["area"].SelectToken("name"));      
                 _footballleague.Add(new FootballLeague
                 {
-                    Id = (int)item.GetValue("id"),
-                    Caption = (string)item.GetValue("caption"),
-                    League = (string)item.GetValue("league"),
-                    Year = (int)item.GetValue("year"),
-                    CurrentMatchday = (int)item.GetValue("currentMatchday"),
-                    NumberOfMatchdays = (int)item.GetValue("numberOfMatchdays"),
-                    NumberOfTeams = (int)item.GetValue("numberOfTeams"),
-                    NumberOfGames = (int)item.GetValue("numberOfGames"),
-                    LastUpdated = (string)item.GetValue("lastUpdated")
+                    Id = (int)competitions[i]["id"],
+                    AreaName = (string)competitions[i]["area"].SelectToken("name"),
+                    Name = (string)competitions[i]["name"],
+                    Code = (string)competitions[i]["code"],
+                    Plan = (string)competitions[i]["plan"],
+                    CurrentSeasonStartDate = (string)competitions[i]["currentSeason"].SelectToken("startDate"),
+                    CurrentSeasonEndDate = (string)competitions[i]["currentSeason"].SelectToken("endDate"),
+                    CurrentMatchday = (int)competitions[i]["currentSeason"].SelectToken("currentMatchday"), 
+                    LastUpdated = (string)competitions[i]["lastUpdated"]
                 });
             }
 
@@ -49,6 +51,7 @@ namespace DataAccessLayer
             HttpWebRequest webrequest = (HttpWebRequest)WebRequest.Create(url);
             webrequest.Method = "GET";
             webrequest.ContentType = "application/x-www-form-urlencoded";
+            webrequest.Headers.Add("X-Auth-Token", "898aab2093234bedb6c9523979193284");
             HttpWebResponse webresponse = (HttpWebResponse)webrequest.GetResponse();
             Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
             StreamReader responseStream = new StreamReader(webresponse.GetResponseStream(), enc);

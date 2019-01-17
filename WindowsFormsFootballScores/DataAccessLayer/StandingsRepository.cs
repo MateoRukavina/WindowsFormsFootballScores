@@ -20,18 +20,17 @@ namespace DataAccessLayer
             string json = CallRestMethod(url);
 
             JObject jsonObject = JObject.Parse(json);
-            var standing = jsonObject["standing"].ToList();
-
+            var standing = jsonObject["standings"].ToList();
             for (int i = 0; i < standing.Count; i++)
             {
-                _standings.Add(new Standings
+                    _standings.Add(new Standings
                  {
                      Position = (int)standing[i]["position"],
-                     TeamName = (string)standing[i]["teamName"],
-                     TeamLogo = (string)standing[i]["crestURI"],
+                     //TeamName = (string)standing[i]["teamName"],
+                     //TeamLogo = (string)standing[i]["crestURI"],
                      PlayedGames = (int)standing[i]["playedGames"],
                      Points = (int)standing[i]["points"],
-                     Goals = (int)standing[i]["goals"],
+                     GoalsFor = (int)standing[i]["goals"],
                      GoalsAgainst = (int)standing[i]["goalsAgainst"],
                      GoalDifference = (int)standing[i]["goalDifference"],
                      Wins = (int)standing[i]["wins"],
@@ -52,6 +51,7 @@ namespace DataAccessLayer
             HttpWebRequest webrequest = (HttpWebRequest)WebRequest.Create(url);
             webrequest.Method = "GET";
             webrequest.ContentType = "application/x-www-form-urlencoded";
+            webrequest.Headers.Add("X-Auth-Token", "898aab2093234bedb6c9523979193284");
             HttpWebResponse webresponse = (HttpWebResponse)webrequest.GetResponse();
             Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
             StreamReader responseStream = new StreamReader(webresponse.GetResponseStream(), enc);
@@ -63,7 +63,7 @@ namespace DataAccessLayer
 
         public string CreateUrl(int leagueId)
         {
-            return "http://api.football-data.org/v1/competitions/"+ leagueId + "/leagueTable";
+            return "http://api.football-data.org/v2/competitions/" + leagueId + "/standings";
         }
     }
 }
